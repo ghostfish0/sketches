@@ -148,56 +148,16 @@ public class LandscapeDisplay {
 	public void repaint() { this.win.repaint(); }
 
 	public static void main(String[] args) throws InterruptedException {
-        // sample grids, String[] because a boolean grid is too unreadable
-		final String[] blinker = {
-		        "_____", //
-		        "_____", //
-		        "_xxx_", //
-		        "_____", //
-		        "_____", //
-		};
-		final String[] pulsar = {
-		        "_____________________", //
-		        "_____________________", //
-		        "_____________________", //
-		        "_____________________", //
-		        "_____xxx___xxx_______", //
-		        "_____________________", //
-		        "___x____x_x____x_____", //
-		        "___x____x_x____x_____", //
-		        "___x____x_x____x_____", //
-		        "_____xxx___xxx_______", //
-		        "_____________________", //
-		        "_____xxx___xxx_______", //
-		        "___x____x_x____x_____", //
-		        "___x____x_x____x_____", //
-		        "___x____x_x____x_____", //
-		        "_____________________", //
-		        "_____xxx___xxx_______", //
-		        "_____________________", //
-		        "_____________________", //
-		        "_____________________", //
-		};
-        // Uncomment to use sample grids
-        //Landscape scape = new Landscape(pulsar);
         Landscape scape = new Landscape(100, 100, 0);
-        // fixed size window, 600 is the size of the longer length/width of the window
         LandscapeDisplay display = new LandscapeDisplay(scape, 600 / Math.max(scape.getRows(),scape.getCols()));
 
-
-		// Uncomment below when advance() has been finished
 		int whenToAdvance = 0;
 		while (true) {
-			// Refresh delay in ms, refresh_rate = 1000 ms/refresh_delay (times/ 1s)
 			Thread.sleep(20);
-			// whenToAdvance % N means  the advance delay is N times the refresh delay
-			// or                       the advance rate is 1/N times the refresh rate
 			if (whenToAdvance++ % 2 == 0) {
 				scape.advance();
 			}
 			display.repaint();
-			// Uncomment when saving photos
-			// display.saveImage("frame_" + whenToAdvance + ".jpg");
 		}
 	}
 }
