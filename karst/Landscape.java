@@ -1,22 +1,33 @@
-import java.awt.Color;
-import java.awt.Graphics;
+import processing.core.PApplet;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+// import java.util.Arrays;
+// import java.util.LinkedList;
+// import java.util.Queue;
+// import java.util.Random;
 
 public class Landscape {
 
-	
 	private Cell[][] landscape;
-	final static private Random rand = new Random();
+	private int rows;
+	private int cols;
+	private int width;
+	private int height;
+	private int cellWidth;
+	private int cellHeight;
 
-	public Landscape(int rows, int cols) {
+	public Landscape(int rows, int cols) { this(rows, cols, 100, 100); }
+	public Landscape(int rows, int cols, int width, int height) {
 		this.landscape = new Cell[rows][cols];
+		this.width = width;
+		this.height = height;
+		this.rows = rows;
+		this.cols = cols;
+		this.cellWidth = this.width / cols;
+		this.cellHeight = this.height / rows;
 		reset();
 	}
 
-	public Landscape(boolean[][] grid) {
+	public Landscape(int[][] grid) {
 		int rows = grid.length;
 		int cols = grid[0].length;
 		for (int row = 0; row < rows; row++) {
@@ -31,9 +42,17 @@ public class Landscape {
 		int cols = this.landscape[0].length;
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < cols; col++) {
-				this.landscape[row][col] = new Cell(this.rand.nextInt(4));
+				this.landscape[row][col] = new Cell(Cell.rand.nextInt(5));
 			}
 		}
+	}
+
+	public void setCellState(double x, double y) {
+		int row = (int)Math.floor(x * getRows());
+		int col = (int)Math.floor(y * getCols());
+		if (row < 0 || row >= getRows() || col < 0 || col > getCols())
+			return;
+		this.landscape[row][col].setState();
 	}
 
 	public int getRows() { return this.landscape.length; }
@@ -86,22 +105,46 @@ public class Landscape {
 			}
 		}
 		// update the temporary work landscape
-		for (int row = 0; row < rows; row++) {
-			for (int col = 0; col < cols; col++) {
-				workLandscape[row][col].updateState();
-			}
-		}
+		// for (int row = 0; row < rows; row++) {
+		//	for (int col = 0; col < cols; col++) {
+		//		workLandscape[row][col].updateState();
+		//	}
+		//}
 		// update the current landscape
 		this.landscape = workLandscape;
 	}
 
-	
-	public void drawScape(Graphics g, int scale, Color color) {
+	public static void offset(int[] arr, int k) {
+		for (int i = 0; i < arr.length; i++)
+			arr[i] += k;
+	}
+    public static void scale(int[] arr, int k) {
+        for (int i = 0; i < arr.length; i++)
+        arr[i] *= k;
+    }
+
+	public static void drawChars(Graphics g, String s, int[] x, int[] y) {
+		for (int index = 0; index < s.length(); index++) {
+			g.drawString("" + s.charAt(index), x[index], y[index]);
+			index++;
+		}
+	}
+
+	public void drawScape(int scale, Color color) {
 		g.setColor(color);
-        g.drawString("" + this, 0, 0);
+        int[] x = new int[this.rows];
+        int[] y = new int[this.cols];
+
+		for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                this.landscape[i][j].draw(g, i * cellWidth, j * cellHeight, cellWidth, cellHeight);
+            }
+		}
+
 	}
 
 	public void draw(Graphics g, int scale) {
+		g.setFont(new Font("Courier New", 1, 7));
 		drawScape(g, scale, Color.WHITE);
 	}
 }

@@ -68,7 +68,7 @@ public class LandscapeDisplay {
 			@Override
 			public void mousePressed(MouseEvent e) {
                 // pass to setCellAlive ratios between 0 and 1 as mousePosition
-				scape.setCellAlive((double)e.getX() / win.getWidth(),
+				scape.setCellState((double)e.getX() / win.getWidth(),
 					   (double)e.getY() / win.getHeight());
 			}
 		});
@@ -77,7 +77,7 @@ public class LandscapeDisplay {
 			@Override
 			public void mouseDragged(MouseEvent e) {
                 // pass to setCellAlive ratios between 0 and 1 as mousePosition
-				scape.setCellAlive((double)e.getX() / win.getWidth(),
+				scape.setCellState((double)e.getX() / win.getWidth(),
 					   (double)e.getY() / win.getHeight());
 			}
 		});
@@ -148,7 +148,7 @@ public class LandscapeDisplay {
 	public void repaint() { this.win.repaint(); }
 
 	public static void main(String[] args) throws InterruptedException {
-        Landscape scape = new Landscape(100, 100, 0);
+        Landscape scape = new Landscape(100, 100);
         LandscapeDisplay display = new LandscapeDisplay(scape, 600 / Math.max(scape.getRows(),scape.getCols()));
 
 		int whenToAdvance = 0;
