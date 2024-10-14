@@ -1,9 +1,5 @@
 import processing.core.PApplet;
 import java.util.ArrayList;
-// import java.util.Arrays;
-// import java.util.LinkedList;
-// import java.util.Queue;
-// import java.util.Random;
 
 public class Landscape {
 
@@ -123,28 +119,23 @@ public class Landscape {
         arr[i] *= k;
     }
 
-	public static void drawChars(Graphics g, String s, int[] x, int[] y) {
-		for (int index = 0; index < s.length(); index++) {
-			g.drawString("" + s.charAt(index), x[index], y[index]);
-			index++;
-		}
+	public static void drawChars(String s, int[] x, int[] y) {
+
 	}
 
-	public void drawScape(int scale, Color color) {
-		g.setColor(color);
+	public void drawScape(int scale) {
         int[] x = new int[this.rows];
         int[] y = new int[this.cols];
 
 		for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
-                this.landscape[i][j].draw(g, i * cellWidth, j * cellHeight, cellWidth, cellHeight);
+                this.landscape[i][j].draw(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
             }
 		}
 
 	}
 
-	public void draw(Graphics g, int scale) {
-		g.setFont(new Font("Courier New", 1, 7));
-		drawScape(g, scale, Color.WHITE);
+	public void draw(int scale) {
+		drawScape(scale);
 	}
 }
