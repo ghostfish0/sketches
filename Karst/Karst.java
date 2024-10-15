@@ -1,19 +1,22 @@
 import processing.core.PApplet;
 
 public class Karst extends PApplet {
-    	public void settings(){
-		size(500, 500);
-	}
-	
-	public void draw(){
-		ellipse(mouseX, mouseY, 50, 50);
-	}
-	
-	public void mousePressed(){
-		background(64);
-	}
+	private int width = 500;
+	private int height = 500;
 
-	public static void main(String[] args) {
-        PApplet.runSketch(new String[]{"Karst"}, new Karst());
+	// final private static String[] stateMap = {"█", "◖", "◗", "⯊", "⯋"};
+	// final private static String[] stateMap = {"a", "b", "c", "d", "e"};
+	private Landscape scape = new Landscape(20, 20, width, height, this);
+
+	public static void main(String[] args) { PApplet.runSketch(new String[] {"Karst"}, new Karst()); }
+
+	public void settings() { size(width, height); }
+
+	public void setup() { frameRate(5); }
+
+	public void draw() {
+		background(200);
+		scape.draw();
+		scape.reset();
 	}
 }

@@ -1,5 +1,5 @@
-import processing.core.PApplet;
 import java.util.ArrayList;
+import processing.core.PApplet;
 
 public class Landscape {
 
@@ -11,8 +11,10 @@ public class Landscape {
 	private int cellWidth;
 	private int cellHeight;
 
-	public Landscape(int rows, int cols) { this(rows, cols, 100, 100); }
-	public Landscape(int rows, int cols, int width, int height) {
+	private static PApplet sketch;
+
+	public Landscape(int rows, int cols, PApplet sketch_) { this(rows, cols, 100, 100, sketch_); }
+	public Landscape(int rows, int cols, int width, int height, PApplet sketch_) {
 		this.landscape = new Cell[rows][cols];
 		this.width = width;
 		this.height = height;
@@ -20,6 +22,7 @@ public class Landscape {
 		this.cols = cols;
 		this.cellWidth = this.width / cols;
 		this.cellHeight = this.height / rows;
+		this.sketch = sketch_;
 		reset();
 	}
 
@@ -28,7 +31,7 @@ public class Landscape {
 		int cols = grid[0].length;
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < cols; col++) {
-				this.landscape[row][col] = new Cell(grid[row][col]);
+				this.landscape[row][col] = new Cell(grid[row][col], this.sketch);
 			}
 		}
 	}
@@ -38,7 +41,7 @@ public class Landscape {
 		int cols = this.landscape[0].length;
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < cols; col++) {
-				this.landscape[row][col] = new Cell(Cell.rand.nextInt(5));
+				this.landscape[row][col] = new Cell(Cell.rand.nextInt(5), this.sketch);
 			}
 		}
 	}
@@ -48,7 +51,7 @@ public class Landscape {
 		int col = (int)Math.floor(y * getCols());
 		if (row < 0 || row >= getRows() || col < 0 || col > getCols())
 			return;
-		this.landscape[row][col].setState();
+		this.landscape[row][col].reset();
 	}
 
 	public int getRows() { return this.landscape.length; }
@@ -97,7 +100,7 @@ public class Landscape {
 		// creates a copy of the currentLandscape;
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < cols; col++) {
-				workLandscape[row][col] = new Cell(this.landscape[row][col].getState());
+				// workLandscape[row][col] = new Cell(this.landscape[row][col].getState());
 			}
 		}
 		// update the temporary work landscape
@@ -114,28 +117,38 @@ public class Landscape {
 		for (int i = 0; i < arr.length; i++)
 			arr[i] += k;
 	}
-    public static void scale(int[] arr, int k) {
-        for (int i = 0; i < arr.length; i++)
-        arr[i] *= k;
-    }
-
-	public static void drawChars(String s, int[] x, int[] y) {
-
+	public static void scale(int[] arr, int k) {
+		for (int i = 0; i < arr.length; i++)
+			arr[i] *= k;
 	}
 
-	public void drawScape(int scale) {
-        int[] x = new int[this.rows];
-        int[] y = new int[this.cols];
+	public static void drawChars(String s, int[] x, int[] y) {}
 
-		for (int i = 0; i < this.rows; i++) {
-            for (int j = 0; j < this.cols; j++) {
-                this.landscape[i][j].draw(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
-            }
+	public void drawGrid() {
+		for (int i = 0; i <= this.rows; i++) {
+            sketch.line(0, i * cellHeight, this.width, i * cellHeight);
 		}
-
+        for (int i = 0; i <= this.cols; i++) {
+            sketch.line(i * cellWidth, 0, i * cellWidth, this.height);
+        }
 	}
 
-	public void draw(int scale) {
-		drawScape(scale);
+	public void drawScape() {
+		for (int i = 0; i < this.rows; i++) {
+			for (int j = 0; j < this.cols; j++) {
+				int x = j * cellWidth;
+				int y = i * cellHeight;
+				this.landscape[i][j].draw(x, y, cellWidth, cellHeight);
+			}
+		}
+	}
+
+	public void draw() {
+        sketch.stroke(128);
+        sketch.strokeWeight(1);
+		drawGrid();
+        sketch.noStroke();
+        sketch.fill(40);
+		drawScape();
 	}
 }
