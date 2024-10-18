@@ -3,6 +3,8 @@ import processing.core.PApplet;
 
 public class Landscape {
 
+	final private static int[][] neighborsOffset = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+
 	private Cell[][] landscape;
 	private int rows;
 	private int cols;
@@ -16,19 +18,17 @@ public class Landscape {
 	public Landscape(int rows, int cols, PApplet sketch_) { this(rows, cols, 100, 100, sketch_); }
 	public Landscape(int rows, int cols, int width, int height, PApplet sketch_) {
 		this.landscape = new Cell[rows][cols];
-		this.width = width;
-		this.height = height;
 		this.rows = rows;
 		this.cols = cols;
-		this.cellWidth = this.width / cols;
-		this.cellHeight = this.height / rows;
+		this.cellWidth = width / cols;
+		this.cellHeight = height / rows;
+		this.width = this.cellWidth * cols;
+		this.height = this.cellHeight * rows;
 		this.sketch = sketch_;
 		reset();
 	}
 
 	public Landscape(int[][] grid) {
-		int rows = grid.length;
-		int cols = grid[0].length;
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < cols; col++) {
 				this.landscape[row][col] = new Cell(grid[row][col], this.sketch);
@@ -36,9 +36,23 @@ public class Landscape {
 		}
 	}
 
+	public void resetCannals() {
+		for (int row = 0; row < this.rows; row++) {
+			for (int col = 0; col < this.cols; col++) {
+                if (row - 1 < 0 || col - 1 < 0) {
+                    this.landscape[row][col] = new Cell(Cell.rand.nextInt(5), this.sketch);
+                    continue;
+                }
+                if (this.landscape[row - 1][col - 1].toString() == "l") {
+                    this.landscape[row][col] = new Cell(Cell.rand.nextInt(5), this.sketch);
+                    continue;
+                }
+                this.landscape[row][col] = new Cell(Cell.rand.nextInt(3), this.sketch);
+			}
+		}
+	}
+
 	public void reset() {
-		int rows = this.landscape.length;
-		int cols = this.landscape[0].length;
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < cols; col++) {
 				this.landscape[row][col] = new Cell(Cell.rand.nextInt(5), this.sketch);
@@ -54,9 +68,13 @@ public class Landscape {
 		this.landscape[row][col].reset();
 	}
 
-	public int getRows() { return this.landscape.length; }
+	public int getRows() { return this.rows; }
 
-	public int getCols() { return this.landscape[0].length; }
+	public int getCols() { return this.cols; }
+
+	public int getWidth() { return this.width; }
+
+	public int getHeight() { return this.height; }
 
 	public Cell getCell(int row, int col) { return this.landscape[row][col]; }
 
@@ -73,20 +91,15 @@ public class Landscape {
 		return str;
 	}
 
-	public ArrayList<Cell> getNeighbors(int row, int col) {
-		ArrayList<Cell> neighbors = new ArrayList<>();
-		int[] offsets = {-1, 0, 1}; // clockwise
-		for (int x : offsets) {
-			for (int y : offsets) {
-				if (x == 0 && y == 0)
-					continue;
-				int nRow = row + x;
-				int nCol = col + y;
-				if ((nRow < 0 || nRow >= this.landscape.length) ||
-				    (nCol < 0 || nCol >= this.landscape[0].length))
-					continue;
-				neighbors.add(this.landscape[nRow][nCol]);
-			}
+	public Cell[] getNeighbors(int row, int col) {
+		Cell[] neighbors = new Cell[neighborsOffset.length];
+        int index = 0;
+		for (int[] offset : neighborsOffset) {
+			int row_ = row + offset[0];
+			int col_ = col + offset[1];
+			if ((row_ < 0 || row_ >= this.rows) || (col_ < 0 || col_ >= this.cols))
+				continue;
+			neighbors[index++] = this.landscape[row_][col_];
 		}
 		return neighbors;
 	}
@@ -113,6 +126,14 @@ public class Landscape {
 		this.landscape = workLandscape;
 	}
 
+	public void rotate() {
+		for (int row = 0; row < this.rows; row++) {
+			for (int col = 0; col < this.cols; col++) {
+				this.landscape[row][col].rotate();
+			}
+		}
+	}
+
 	public static void offset(int[] arr, int k) {
 		for (int i = 0; i < arr.length; i++)
 			arr[i] += k;
@@ -126,11 +147,11 @@ public class Landscape {
 
 	public void drawGrid() {
 		for (int i = 0; i <= this.rows; i++) {
-            sketch.line(0, i * cellHeight, this.width, i * cellHeight);
+			sketch.line(0, i * cellHeight, this.width, i * cellHeight);
 		}
-        for (int i = 0; i <= this.cols; i++) {
-            sketch.line(i * cellWidth, 0, i * cellWidth, this.height);
-        }
+		for (int i = 0; i <= this.cols; i++) {
+			sketch.line(i * cellWidth, 0, i * cellWidth, this.height);
+		}
 	}
 
 	public void drawScape() {
@@ -144,11 +165,11 @@ public class Landscape {
 	}
 
 	public void draw() {
-        sketch.stroke(128);
-        sketch.strokeWeight(1);
+		sketch.stroke(128);
+		sketch.strokeWeight(1);
 		drawGrid();
-        sketch.noStroke();
-        sketch.fill(40);
+		sketch.noStroke();
+		sketch.fill(40);
 		drawScape();
 	}
 }
