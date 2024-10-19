@@ -19,6 +19,7 @@ public class Cell {
 	remains conductor
     */
 	final public static String[] stateMap = {"empty", "head", "tail", "conductor"};
+	final public static int[][] colorMap = {{0, 0, 0}, {0, 0, 255}, {255, 0, 0}, {255, 255, 0}};
 
 	public Cell(int state, PApplet sketch_) {
 		this.state = state;
@@ -66,23 +67,33 @@ public class Cell {
 
 	public static String toString(int state) { return stateMap[state]; }
 
+	private void fill(int[] rgb) { sketch.fill(rgb[0], rgb[1], rgb[2]); }
+
 	public void draw(float x, float y, float w, float h) {
-		switch (this.toString()) {
-		case "empty":
-			sketch.fill(0);
-			break;
-		case "head":
-            sketch.fill(0, 0, 255);
-			break;
-		case "tail":
-            sketch.fill(255, 0, 0);
-			break;
-		case "conductor":
-			sketch.fill(255, 255, 0);
-			break;
-        default:
-            break;
-		}
+		// switch (this.toString()) {
+		// case "empty":
+		//	sketch.fill(0);
+		//	break;
+		// case "head":
+		//           sketch.fill(0, 0, 255);
+		//	break;
+		// case "tail":
+		//           sketch.fill(255, 0, 0);
+		//	break;
+		// case "conductor":
+		//	sketch.fill(255, 255, 0);
+		//	break;
+		//       default:
+		//           break;
+		// }
+		fill(colorMap[this.state]);
 		sketch.rect(x, y, w, h);
 	}
+    
+    public void drawBorder(int x, int y, int w, int h) {
+        sketch.stroke(255);        
+        sketch.strokeWeight(5);
+        sketch.noFill();
+		sketch.rect(x, y, w, h);
+    }
 }

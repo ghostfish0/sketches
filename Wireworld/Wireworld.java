@@ -1,4 +1,5 @@
 import processing.core.PApplet;
+import processing.event.MouseEvent;
 
 public class Wireworld extends PApplet {
 	final private int width = 500;
@@ -10,6 +11,7 @@ public class Wireworld extends PApplet {
 	private int lagger = 0;
 	private int laggerLimit = 5;
 
+    private int wheelCnt = 0;
 	private int brushState = 1;
 	private Cell brush = new Cell(brushState, this);
 	final private int brushLimit = Cell.stateMap.length;
@@ -23,31 +25,42 @@ public class Wireworld extends PApplet {
 	public void setup() {
 		// frameRate(5);
 		background(200);
-        scape.reset();
+		scape.reset();
 		scape.draw();
 	}
 
 	public void draw() {
 		background(200);
 		scape.draw();
-		brush.draw(scape.xAt((double) (mouseX - 10) / width), scape.yAt((double) (mouseY - 10) / height), 25, 25);
+		brush.draw(scape.xAt((double)(mouseX - 10) / width), scape.yAt((double)(mouseY - 10) / height), 25, 25);
+        brush.drawBorder(scape.xAt((double)(mouseX - 10) / width), scape.yAt((double)(mouseY - 10) / height), 25, 25);
 		if (running && (lagger++) % laggerLimit == 0)
 			scape.advance();
 	}
 
-	public void mouseDragged() { scape.cellAt((double) (mouseX - 10) / width, (double) (mouseY - 10) / height).setState(brushState); }
+	public void mouseDragged() {
+		scape.cellAt((double)(mouseX - 10) / width, (double)(mouseY - 10) / height).setState(brushState);
+	}
 
 	public void mouseClicked() { mouseDragged(); }
 
 	public void keyTyped() {
 		if (key == ' ') {
-            running = !running;
+			running = !running;
+		}
+	}
+	public void keyReleased() {
+		if (keyCode == RIGHT) {
+			scape.advance();
 		}
 	}
 
-    public void mouseWheel() {
+	public void mouseWheel(MouseEvent event) {
+        wheelCnt++;
+		if (wheelCnt % 10 == 0) {
 			brushState++;
 			brushState %= brushLimit;
 			brush.setState(brushState);
-    }
+		}
+	}
 }
