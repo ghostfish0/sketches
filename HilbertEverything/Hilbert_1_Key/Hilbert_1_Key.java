@@ -2,51 +2,34 @@ import processing.core.PApplet;
 import processing.event.MouseEvent;
 
 public class Hilbert_1_Key extends PApplet {
+	final private static int[][][] htable = new int[][][] {
+	        {{7, 0}, {0, 1}, {6, 3}, {0, 2}}, //
+	        {{1, 2}, {7, 3}, {1, 1}, {6, 0}}, //
+	        {{2, 1}, {2, 2}, {4, 0}, {5, 3}}, //
+	        {{4, 3}, {5, 0}, {3, 2}, {3, 1}}, //
+	        {{3, 3}, {4, 2}, {2, 0}, {4, 1}}, //
+	        {{5, 1}, {3, 0}, {5, 2}, {2, 3}}, //
+	        {{6, 2}, {6, 1}, {0, 3}, {1, 0}}, //
+	        {{0, 0}, {1, 3}, {7, 1}, {7, 2}}  //
+	};
 	final private int width = 500;
 	final private int height = 500;
 	final private int rows = 20;
 	final private int column = 20;
 
-	// private Hilbert_1_Key hilly = new Hilbert_1_Key(rows, column);
-
-	public static void main(String[] args) { PApplet.runSketch(new String[] {"Hilbert_1_Key"}, new Hilbert_1_Key()); }
-
 	public void settings() { size(width, height); }
 
-	public void setup() {        background(0);
-        drawHilbert(3, width, height);
-}
-
-	public void drawHilbert(int level, int width, int height) {
-		rect(0, 0, width, height);
-		if (level == 0) {
-			line(width / 4, 3 * height / 4, width / 4, height / 4);
-			line(width / 4, height / 4, 3 * width / 4, height / 4);
-			line(3 * width / 4, height / 4, 3 * width / 4, 3 * height / 4);
-			return;
-		}
-		drawHilbert(level - 1, width / 2, height / 2);
-
-		translate(width / 2, 0);
-		drawHilbert(level - 1, width / 2, height / 2);
-
-		translate(-width / 2, height / 2);
-        pushMatrix();
-		translate(width / 2, 0);
-		rotate(HALF_PI);
-		drawHilbert(level - 1, width / 2, height / 2);
-        popMatrix();
-
-		translate(width / 2, 0);
-        pushMatrix();
-        translate(0, height / 2);
-        rotate(PI + HALF_PI);
-		drawHilbert(level - 1, width / 2, height / 2);
-        popMatrix();
-
-		translate(-width / 2, -height / 2);
+	public void setup() {
+		background(0);
+		// drawHilbert(3, width, height);
 	}
 
-	public void draw() {
-	};
+	public void draw(){};
+
+	public static int getKey(int level, int r, int c) {
+		//
+		return 0;
+	}
+
+	public static void main(String[] args) { PApplet.runSketch(new String[] {"Hilbert_1_Key"}, new Hilbert_1_Key()); }
 }
