@@ -1,15 +1,15 @@
 import processing.core.PApplet;
 import processing.event.MouseEvent;
 
-public class Hilbert extends PApplet {
+public class Hilbert_0_Naive extends PApplet {
 	final private int width = 500;
 	final private int height = 500;
 	final private int rows = 20;
 	final private int column = 20;
 
-	// private Hilbert hilly = new Hilbert(rows, column);
+	// private Hilbert_0_Naive hilly = new Hilbert_0_Naive(rows, column);
 
-	public static void main(String[] args) { PApplet.runSketch(new String[] {"Hilbert"}, new Hilbert()); }
+	public static void main(String[] args) { PApplet.runSketch(new String[] {"Hilbert_0_Naive"}, new Hilbert_0_Naive()); }
 
 	public void settings() { size(width, height); }
 

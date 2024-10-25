@@ -1,0 +1,6 @@
+TabWidth : 16
+UseTab : "Always"
+IndentWidth : 16
+ContinuationIndentWidth : 8
+ColumnLimit : 140
+
