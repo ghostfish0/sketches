@@ -49,8 +49,9 @@ public class SegmentTreeImage extends SegmentTree2D {
 		float results = stdev(v, r1, c1, r2, c2, rr, cc, rR, cC);
 		// System.out.println(results);
 		int cnt = (rR - rr + 1) * (cC - cc + 1);
-		// if (results < cnt * (1 << (lv + 1))) {
-		if (results < 80.0 * sketch.mouseX / sketch.width + 20) {
+        //if (results < 20) {
+		 //if (results < cnt * (1 << (lv + 1))) {
+		if (results < 40.0 * sketch.mouseX / sketch.width + 20) {
 			float r_ = (float)Math.sqrt(1f * tR.query(v, r1, c1, r2, c2, rr, cc, rR, cC) / cnt);
 			float g_ = (float)Math.sqrt(1f * tG.query(v, r1, c1, r2, c2, rr, cc, rR, cC) / cnt);
 			float b_ = (float)Math.sqrt(1f * tB.query(v, r1, c1, r2, c2, rr, cc, rR, cC) / cnt);
