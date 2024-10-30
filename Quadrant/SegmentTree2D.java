@@ -1,14 +1,11 @@
-import processing.core.PApplet;
 public class SegmentTree2D {
-	private static PApplet sketch;
+	protected int[][] arr;
+	private int rows;
+	private int cols;
+	protected int[] t;
 
-	public int[][] arr;
-	public int rows;
-	public int cols;
-	private int[] t;
-
-	public SegmentTree2D(int[][] arr, PApplet sketch) {
-		this.sketch = sketch;
+    protected SegmentTree2D() {}
+	public SegmentTree2D(int[][] arr) {
 		this.arr = arr;
 		this.rows = arr.length;
 		this.cols = arr[0].length;
@@ -17,9 +14,9 @@ public class SegmentTree2D {
 	}
 
 	private void build(int v, int r1, int c1, int r2, int c2) {
-        if (r1 > r2 || c1 > c2)
-            return;
-        if (r1 == r2 && c1 == c2) {
+		if (r1 > r2 || c1 > c2)
+			return;
+		if (r1 == r2 && c1 == c2) {
 			t[v] = arr[r1][c1];
 		} else {
 			int rm = (r1 + r2) / 2;
@@ -32,12 +29,12 @@ public class SegmentTree2D {
 		}
 	}
 
-	public int query(int r, int c) { return arr[r][c]; }
+	public int query(int r, int c) { return this.arr[r][c]; }
 	public int query(int r1, int c1, int r2, int c2) {
-		return this.query(1, 0, 0, this.rows - 1, this.cols - 1, r1, c1, r2, c2);
+		return query(1, 0, 0, this.rows - 1, this.cols - 1, r1, c1, r2, c2);
 	}
-	public int query(int v, int r1, int c1, int r2, int c2, int rr, int cc, int rR, int cC) {
-		if (cc > cC || rr > rR)
+	protected int query(int v, int r1, int c1, int r2, int c2, int rr, int cc, int rR, int cC) {
+		if (cc > cC || rr > rR || v > t.length || v < 1)
 			return 0;
 		if (r1 == rr && c1 == cc && r2 == rR && c2 == cC) {
 			return t[v];
@@ -52,28 +49,11 @@ public class SegmentTree2D {
 		return results;
 	}
 
-	public void queryDraw() { queryDraw(1, 0, 0, this.rows - 1, this.cols - 1, 0); }
-	public void queryDraw(int v, int r1, int c1, int r2, int c2, int lv) {
-        System.out.println("v: " + v + "-> " + t[v] / ((r2 - r1 + 1) * (c2 - c1 + 1)));
-		if (t[v] < (r2 - r1 + 1) * (c2 - c1 + 1) * (1 << lv) || r1 == r2 && c1 == c2) { // if brighter than current level
-			sketch.push();
-			sketch.fill(t[v]);
-			sketch.rect(r1, c1, r2, c2);
-			sketch.pop();
-			return;
-		} else {
-            System.out.println("goodbye");
-			int rm = (r1 + r2) / 2;
-			int cm = (c1 + c2) / 2;
-			queryDraw(v * 4, r1, c1, rm, cm, lv + 1);
-			queryDraw(v * 4 + 1, r1, cm + 1, rm, c2, lv + 1);
-			queryDraw(v * 4 + 2, rm + 1, c1, r2, cm, lv + 1);
-			queryDraw(v * 4 + 3, rm + 1, cm + 1, r2, c2, lv + 1);
-		}
-	}
-
-	private static int min(int a, int b) { return (a < b ? a : b); }
-	private static int max(int a, int b) { return (a > b ? a : b); }
+	protected static int min(int a, int b) { return (a < b ? a : b); }
+	protected static int max(int a, int b) { return (a > b ? a : b); }
+    protected static int squared(int a) { return a * a; }
+    protected static float squared(float a) { return a * a; }
+    protected static float squared(double a) { return (float)(a * a); }
 
 	public String toString() {
 		String str = "";
