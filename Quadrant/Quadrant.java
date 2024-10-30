@@ -18,7 +18,8 @@ public class Quadrant extends PApplet {
 	final private int width = 500;
 	final private int height = 500;
 
-    private SegmentTreeImage smsm;
+	private SegmentTreeImage smsm;
+	private PImage img;
 
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
@@ -27,19 +28,19 @@ public class Quadrant extends PApplet {
 
 	public void setup() {
 		background(0);
-		PImage img = loadImage("./image.jpg");
+		rectMode(CORNER);
+		img = loadImage("./image.jpg");
 		img.resize(width, height);
 		smsm = new SegmentTreeImage(img, this);
 		noStroke();
-		smsm.queryDraw();
-        System.out.println("hello");
 	}
 
 	public void draw() {
-		//        background(0);
-		//int x = mouseX > width ? width : mouseX < 0 ? 0 : mouseX;
-		//int y = mouseY > height ? height : mouseY < 0 ? 0 : mouseY;
-		//smsm.queryDraw(x, y);
+		background(0);
+		int x = mouseX > width ? width : mouseX < 0 ? 0 : mouseX;
+		int y = mouseY > height ? height : mouseY < 0 ? 0 : mouseY;
+		smsm.queryDraw();
+		System.out.println("hello");
 	};
 
 	public static void main(String[] args) { PApplet.runSketch(new String[] {"Quadrant"}, new Quadrant()); }

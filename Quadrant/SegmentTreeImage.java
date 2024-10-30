@@ -6,11 +6,11 @@ public class SegmentTreeImage extends SegmentTree2D {
 	private static PApplet sketch;
 	private int width;
 	private int height;
-	private int[][] r;
-	private int[][] g;
-	private int[][] b;
-	private int[][] brightness;
-	private int[][] brightness2;
+	private long[][] r;
+	private long[][] g;
+	private long[][] b;
+	private long[][] brightness;
+	private long[][] brightness2;
 	SegmentTree2D tR;
 	SegmentTree2D tG;
 	SegmentTree2D tB;
@@ -26,11 +26,11 @@ public class SegmentTreeImage extends SegmentTree2D {
 		this.g = imgProcess(img, c -> squared((int)sketch.green(c)));
 		this.b = imgProcess(img, c -> squared((int)sketch.blue(c)));
 		this.brightness = imgProcess(img, c -> (int)sketch.brightness(c));
+		this.brightness2 = imgProcess(img, c -> (int) squared(sketch.brightness(c)));
 		this.tR = new SegmentTree2D(this.r);
 		this.tG = new SegmentTree2D(this.g);
 		this.tB = new SegmentTree2D(this.b);
 		this.tBrightness = new SegmentTree2D(this.brightness);
-		this.brightness2 = imgProcess(img, c -> squared((int)sketch.brightness(c)));
 		this.tBrightness2 = new SegmentTree2D(this.brightness2);
 	}
 
@@ -45,16 +45,17 @@ public class SegmentTreeImage extends SegmentTree2D {
 	protected void queryDraw(int v, int r1, int c1, int r2, int c2, int rr, int cc, int rR, int cC, int lv) {
 		if (cc > cC || rr > rR)
 			return;
-		 int results = tBrightness.query(v, r1, c1, r2, c2, rr, cc, rR, cC);
-		//float results = stdev(v, r1, c1, r2, c2, rr, cc, rR, cC);
-		//System.out.println(results);
+		// int results = tBrightness.query(v, r1, c1, r2, c2, rr, cc, rR, cC);
+		float results = stdev(v, r1, c1, r2, c2, rr, cc, rR, cC);
+		// System.out.println(results);
 		int cnt = (rR - rr + 1) * (cC - cc + 1);
-		if (results > 100 ) {
+		// if (results < cnt * (1 << (lv + 1))) {
+		if (results < 80.0 * sketch.mouseX / sketch.width + 20) {
 			float r_ = (float)Math.sqrt(1f * tR.query(v, r1, c1, r2, c2, rr, cc, rR, cC) / cnt);
 			float g_ = (float)Math.sqrt(1f * tG.query(v, r1, c1, r2, c2, rr, cc, rR, cC) / cnt);
 			float b_ = (float)Math.sqrt(1f * tB.query(v, r1, c1, r2, c2, rr, cc, rR, cC) / cnt);
 			sketch.fill(r_, g_, b_);
-			sketch.rect(rr, cc, rR, cC);
+			sketch.rect(rr - 1, cc - 1, rR + 1, cC + 1);
 		} else {
 			int rm = (r1 + r2) / 2;
 			int cm = (c1 + c2) / 2;
@@ -65,8 +66,8 @@ public class SegmentTreeImage extends SegmentTree2D {
 		}
 	}
 
-	private static int[][] imgProcess(PImage img, Function<Integer, Integer> func) {
-		int[][] result = new int[img.width][img.height];
+	private static long[][] imgProcess(PImage img, Function<Integer, Integer> func) {
+		long[][] result = new long[img.width][img.height];
 		for (int x = 0; x < img.width; x++) {
 			for (int y = 0; y < img.height; y++) {
 				int pixelColor = img.pixels[y * img.width + x];
@@ -76,22 +77,37 @@ public class SegmentTreeImage extends SegmentTree2D {
 		return result;
 	}
 	private float stdev(int v, int r1, int c1, int r2, int c2, int rr, int cc, int rR, int cC) {
+		// sum of (xi - u)^2  =
+		// sum of (xi - sum(xi) / n)^2
+		// sum of (xi^2 - 2 * xi * sum(xi) / n + sum^2(xi) / n^2)
+		// sum(xi^2)    - 2 * sum^2(xi) / n + sum^2(xi) / n
+		// sum(xi^2)    - sum^2(xi) / n
 		int cnt = (rR - rr + 1) * (cC - cc + 1);
 		if (cnt == 0)
 			return 0;
 
-		int sum = tBrightness.query(v, r1, c1, r2, c2, rr, cc, rR, cC);
-		float mean = 1f * sum / cnt;
-		int sum2 = tBrightness2.query(v, r1, c1, r2, c2, rr, cc, rR, cC);
+		long sum = tBrightness.query(v, r1, c1, r2, c2, rr, cc, rR, cC);
+		long sum2 = tBrightness2.query(v, r1, c1, r2, c2, rr, cc, rR, cC);
 
-		// Calculate variance
-		float variance = (sum2 - 2 * mean * sum + cnt * mean * mean) / cnt;
-
-		// Check for negative variance due to precision errors
-		if (variance < 0) {
-			variance = 0;
-		}
+		double variance = (double) sum2 / cnt - (sum / cnt) * (sum / cnt);
 
 		return (float)Math.sqrt(variance);
+	}
+
+	public void test() {
+		int r = Math.abs(sketch.mouseX - width / 2);
+		int r1 = width / 2 - r;
+		int r2 = width / 2 + r;
+		int c1 = width / 2 - r;
+		int c2 = width / 2 + r;
+		sketch.push();
+		sketch.noFill();
+		sketch.stroke(0, 0, 255);
+		sketch.strokeWeight(5);
+		sketch.rect(r1, c1, 2 * r, 2 * r);
+		sketch.stroke(255, 0, 0);
+		sketch.text(stdev(1, 0, 0, this.height - 1, this.width - 1, r1, c1, r2, c2), width / 2, height / 2);
+		// System.out.println();
+		sketch.pop();
 	}
 }
