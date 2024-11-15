@@ -16,15 +16,15 @@ public class CircleIllusion extends PApplet {
 	final private int margin = 40;
 	final private float radius = 200;
 	final private float cellRadius = 10;
-	final private float T = 100f;
-	final private float omega = TAU / T;
-	final private float k = omega * omega;
 
-	private int n = 100;
+	private float T = 200f;
+	private float omega = TAU / T;
+	private float k = omega * omega;
+	private int n = 30;
 
 	private ControlP5 gui;
-	private String xformula = "r * c * c";
-	private String yformula = "r * s * c";
+	private String xformula = "r*c*c";
+	private String yformula = "r*c*s";
 
 	public class Particle {
 		public float x;
@@ -70,6 +70,7 @@ public class CircleIllusion extends PApplet {
 		gui.addTextfield("xformula").setPosition(40, 40).setSize(200, 20).setAutoClear(false).setText(xformula);
 		gui.addTextfield("yformula").setPosition(40, 70).setSize(200, 20).setAutoClear(false).setText(yformula);
 		gui.addTextfield("n").setPosition(40, 100).setSize(200, 20).setAutoClear(false).setText(n + "");
+		gui.addTextfield("T").setPosition(40, 130).setSize(200, 20).setAutoClear(false).setText(T + "");
 
 		addParticles();
 	}
@@ -145,7 +146,17 @@ public class CircleIllusion extends PApplet {
 		try {
 			this.n = Integer.parseInt(s);
 		} catch (Exception e) {
-            return;
+			return;
+		}
+		addParticles();
+	}
+	public void T(String s) {
+		try {
+			this.T = Float.parseFloat(s);
+			this.omega = TAU / T;
+			this.k = omega * omega;
+		} catch (Exception e) {
+			return;
 		}
 		addParticles();
 	}
