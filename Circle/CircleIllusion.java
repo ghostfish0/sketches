@@ -2,6 +2,7 @@ import controlP5.*;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.function.Function;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -19,7 +20,11 @@ public class CircleIllusion extends PApplet {
 	final private float omega = TAU / T;
 	final private float k = omega * omega;
 
-	ControlP5 gui;
+	private int n = 100;
+
+	private ControlP5 gui;
+	private String xformula = "r * c * c";
+	private String yformula = "r * s * c";
 
 	public class Particle {
 		public float x;
@@ -62,19 +67,33 @@ public class CircleIllusion extends PApplet {
 		noFill();
 		background(0, 0, 255);
 		gui = new ControlP5(this);
-		gui.addToggle("toggleValue").setPosition(40, 100).setSize(50, 20);
+		gui.addTextfield("xformula").setPosition(40, 40).setSize(200, 20).setAutoClear(false).setText(xformula);
+		gui.addTextfield("yformula").setPosition(40, 70).setSize(200, 20).setAutoClear(false).setText(yformula);
+		gui.addTextfield("n").setPosition(40, 100).setSize(200, 20).setAutoClear(false).setText(n + "");
 
-		int n = 100;
-		for (int i = 0; i < n; i++) {
-			float angle = PI / n * i;
-			float cos_ = cos(angle);
-			float sin_ = sin(angle);
-			float x = radius * cos_;
-			float y = radius * cos_;
-			float vx = -radius * omega * sin_ * cos_;
-			float vy = -radius * omega * sin_ * sin_;
-			this.particles.add(new Particle(x, y, vx, vy));
+		addParticles();
+	}
+
+	public void addParticles() {
+		LinkedList<Particle> p_ = new LinkedList<>();
+		try {
+			for (int i = 0; i < n; i++) {
+				float angle = PI / n * i;
+				float sin_ = sin(angle);
+				float cos_ = cos(angle);
+				Map<String, Double> variables =
+				        Map.of("r", (double)radius, "s", (double)sin_, "c", (double)cos_,
+				               "a", (double)angle);
+				float x = (float)Expression.eval(xformula, variables);
+				float y = (float)Expression.eval(yformula, variables);
+				float vx = -radius * omega * sin_ * cos_;
+				float vy = -radius * omega * sin_ * sin_;
+				p_.add(new Particle(x, y, vx, vy));
+			}
+		} catch (Exception e) {
+			return;
 		}
+		this.particles = p_;
 	}
 
 	public void draw() {
@@ -114,10 +133,22 @@ public class CircleIllusion extends PApplet {
 		}
 	}
 
-	public static void main(String[] args) {
-		String processingNativeLibs = "C:/Program Files/processing-4.3/core/library/windows-amd64;";
-		String updatedPath = processingNativeLibs + System.getProperty("java.library.path");
-		System.setProperty("java.library.path", updatedPath);
-		PApplet.runSketch(new String[] {"CircleIllusion"}, new CircleIllusion());
+	public void xformula(String s) {
+		this.xformula = s;
+		addParticles();
 	}
+	public void yformula(String s) {
+		this.yformula = s;
+		addParticles();
+	}
+	public void n(String s) {
+		try {
+			this.n = Integer.parseInt(s);
+		} catch (Exception e) {
+            return;
+		}
+		addParticles();
+	}
+
+	public static void main(String[] args) { PApplet.runSketch(new String[] {"CircleIllusion"}, new CircleIllusion()); }
 }
