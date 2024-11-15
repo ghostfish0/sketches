@@ -1,3 +1,4 @@
+import com.krab.lazy.*;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -5,6 +6,7 @@ import java.util.function.Function;
 import processing.core.PApplet;
 import processing.core.PVector;
 import processing.event.MouseEvent;
+import processing.opengl.PGraphics2D;
 
 public class CircleIllusion extends PApplet {
 	final private int width = 500;
@@ -12,9 +14,11 @@ public class CircleIllusion extends PApplet {
 	final private int margin = 40;
 	final private float radius = 200;
 	final private float cellRadius = 10;
-	final private float T = 100f; 
-    final private float omega = TAU / T;
-    final private float k = omega * omega;
+	final private float T = 100f;
+	final private float omega = TAU / T;
+	final private float k = omega * omega;
+
+	private LazyGui gui;
 
 	public class Particle {
 		public float x;
@@ -48,26 +52,30 @@ public class CircleIllusion extends PApplet {
 
 	public CircleIllusion() { super(); }
 
-	public void settings() { size(width + margin, height + margin); }
+	public void settings() { size(width + margin, height + margin, P2D); }
 
 	public void setup() {
 		noFill();
 		background(0, 0, 255);
+		gui = new LazyGui(this);
 		int n = 100;
 		for (int i = 0; i < n; i++) {
 			float angle = PI / n * i;
-            float cos_ = cos(angle);
-            float sin_ = sin(angle);
+			float cos_ = cos(angle);
+			float sin_ = sin(angle);
 			float x = radius * cos_;
 			float y = radius * cos_;
-            float vx = -radius * omega * sin_ * cos_;
-            float vy = -radius * omega * sin_ * sin_;
+			float vx = -radius * omega * sin_ * cos_;
+			float vy = -radius * omega * sin_ * sin_;
 			this.particles.add(new Particle(x, y, vx, vy));
 		}
+        gui.hide("options");
+        gui.hide("saves");
+        gui.hide("background");
 	}
 
 	public void draw() {
-		background(128);
+        background(128);
 		translate(margin / 2, margin / 2);
 		translate(this.width / 2, this.height / 2);
 		noFill();
@@ -75,6 +83,7 @@ public class CircleIllusion extends PApplet {
 		updateParticles();
 		fill(0, 255, 0);
 		drawParticles();
+        gui.text("text header", "");
 	};
 
 	public void drawParticles() {
@@ -101,5 +110,10 @@ public class CircleIllusion extends PApplet {
 		}
 	}
 
-	public static void main(String[] args) { PApplet.runSketch(new String[] {"CircleIllusion"}, new CircleIllusion()); }
+	public static void main(String[] args) {
+		String processingNativeLibs = "C:/Program Files/processing-4.3/core/library/windows-amd64;";
+		String updatedPath = processingNativeLibs + System.getProperty("java.library.path");
+		System.setProperty("java.library.path", updatedPath);
+		PApplet.runSketch(new String[] {"CircleIllusion"}, new CircleIllusion());
+	}
 }
