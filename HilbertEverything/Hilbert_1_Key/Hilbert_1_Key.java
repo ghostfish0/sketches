@@ -31,7 +31,6 @@ public class Hilbert_1_Key extends PApplet {
 	public void settings() { size(width + margin, height + margin); }
 
 	public void setup() {
-        translate(margin / 2, margin / 2);
         noFill();
 		background(128);
 		getKeys();
@@ -42,9 +41,10 @@ public class Hilbert_1_Key extends PApplet {
 	}
 
 	public void draw() {
-		//background(128);
-		// this.level = (int)Math.floor(8.0 * mouseX / width) % 8 + 1;
-		// smsm.drawHilbert(level);
+		background(128);
+        translate(margin / 2, margin / 2);
+		this.level = (int)Math.floor(8.0 * mouseX / width) % 8 + 1;
+		smsm.drawHilbert(level);
 	};
 
 	public void drawHilbertCurve(int level) {
@@ -72,11 +72,9 @@ public class Hilbert_1_Key extends PApplet {
 		if (r < 0 || r >= rows) {
 			return -1;
 		}
-
 		if (c < 0 || c >= cols) {
 			return -1;
 		}
-
 		if (ktable[level][r][c] > 0)
 			return ktable[level][r][c];
 
