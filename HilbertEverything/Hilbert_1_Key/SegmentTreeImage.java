@@ -75,7 +75,7 @@ public class SegmentTreeImage extends SegmentTree2D {
 		int x1 = (int) Math.floor(c1 * cellWidth + cellWidth / 2);
 		int y2 = (int) Math.floor(r2 * cellHeight + cellHeight / 2);
 		int x2 = (int) Math.floor(c2 * cellWidth + cellWidth / 2);
-		float results = stdev(x1, y1, x2 - 1, y2 - 1);
+		float results = stdev2(x1, y1, x2 - 1, y2 - 1);
 		if (results < 500) {
 			output.add(new Cell(r1, c1, getKey(r1, c1, this.level)));
 			output.add(new Cell(r1, c2, getKey(r1, c2, this.level)));
@@ -101,7 +101,7 @@ public class SegmentTreeImage extends SegmentTree2D {
 		}
 		return result;
 	}
-	private float stdev(int x1, int y1, int x2, int y2) {
+	private float stdev2(int x1, int y1, int x2, int y2) {
 		// sum of (xi - u)^2  =
 		// sum of (xi - sum(xi) / n)^2
 		// sum of (xi^2 - 2 * xi * sum(xi) / n + sum^2(xi) / n^2)
@@ -116,7 +116,7 @@ public class SegmentTreeImage extends SegmentTree2D {
 
 		double variance = (double)sum2 / cnt - (sum / cnt) * (sum / cnt);
 
-		return (float)Math.floor(variance);
+		return (float)variance;
 	}
 	private static int getKey(int r, int c, int level) { return Hilbert_1_Key.getKey(r, c, level); }
 }
