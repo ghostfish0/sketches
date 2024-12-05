@@ -1,0 +1,3 @@
+C:/Users/tinnguyen/Documents/notes/gamedev/sketches/npaint/build/_deps/ftxui-subbuild/CMakeFiles/ftxui-populate.dir
+C:/Users/tinnguyen/Documents/notes/gamedev/sketches/npaint/build/_deps/ftxui-subbuild/CMakeFiles/edit_cache.dir
+C:/Users/tinnguyen/Documents/notes/gamedev/sketches/npaint/build/_deps/ftxui-subbuild/CMakeFiles/rebuild_cache.dir
