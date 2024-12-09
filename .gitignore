@@ -1,2 +1,3 @@
 *.class
 npaint/build
+npaint/.cache/clangd/index
