@@ -28,36 +28,34 @@ main()
 	auto renderer_plot_3 = Renderer([&] {
 		auto c = Canvas(200, 100);
 		c.DrawText(0, 0, "A 2D gaussian plot");
-		int size = 20;
+		int size = 15;
 
 		// mouse_x = 5mx + 3*my
 		// mouse_y = 0mx + -5my + 90
 		// this part is alpine transforming the mouse coordinate into 3d
-        float scalek = 7.f;
-        float scalej = 3.f;
-		float my = (mouse_y - 90) / -scalek;
-		float mx = (mouse_x - scalej * my) / scalek;
+		float my = (mouse_y - 90) / -5.f;
+		float mx = (mouse_x - 3 * my) / 5.f;
 		std::vector<std::vector<float>> ys(size, std::vector<float>(size));
 		for (int y = 0; y < size; y++) {
 			for (int x = 0; x < size; x++) {
 				float dx = x - mx;
 				float dy = y - my;
-				ys[y][x] = -scalej / 2 + scalej * std::exp(-1/scalek * (dx * dx + dy * dy));
+				ys[y][x] = -1.5 + 3.0 * std::exp(-0.2f * (dx * dx + dy * dy));
 			}
 		}
 		for (int y = 0; y < size; y++) {
 			for (int x = 0; x < size; x++) {
 				if (x != 0) {
-					c.DrawPointLine(scalek * (x - 1) + scalej * (y - 0),
-							90 -scalek * (y - 0) - 5 * ys[y][x - 1],
-							scalek * (x - 0) + scalej * (y - 0),
-							90 - scalek * (y - 0) - scalek * ys[y][x]);
+					c.DrawPointLine(5 * (x - 1) + 3 * (y - 0),
+							90 - 5 * (y - 0) - 5 * ys[y][x - 1],
+							5 * (x - 0) + 3 * (y - 0),
+							90 - 5 * (y - 0) - 5 * ys[y][x]);
 				}
 				if (y != 0) {
-					c.DrawPointLine(scalek * (x - 0) + scalej * (y - 1),
-							90 - scalek * (y - 1) - scalek * ys[y - 1][x],
-							scalek * (x - 0) + scalej * (y - 0),
-							90 - scalek * (y - 0) - scalek * ys[y][x]);
+					c.DrawPointLine(5 * (x - 0) + 3 * (y - 1),
+							90 - 5 * (y - 1) - 5 * ys[y - 1][x],
+							5 * (x - 0) + 3 * (y - 0),
+							90 - 5 * (y - 0) - 5 * ys[y][x]);
 				}
 			}
 		}
