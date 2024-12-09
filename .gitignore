@@ -1,2 +1,5 @@
 *.class
-npaint/build
+npaint/build/
+npaint/build/*
+npaint/.cache/
+npaint/.cache/*
